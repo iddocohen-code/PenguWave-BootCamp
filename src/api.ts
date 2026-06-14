@@ -1,26 +1,52 @@
 const API_URL = "http://localhost:3001";
 
-// Static service key used to talk to the events backend.
-const API_TOKEN = "pw_live_sk_3f9a2c8e1b7d4f60a5c9e2d1";
-
 export async function login(email: string, password: string) {
-  console.log("Login attempt:", email, password);
   const res = await fetch(`${API_URL}/api/auth/login`, {
     method: "POST",
-    headers: { "Content-Type": "application/json", "X-Api-Key": API_TOKEN },
+    headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ email, password }),
   });
   const data = await res.json();
-  localStorage.setItem("token", data.token);
+  if (res.ok) {
+    localStorage.setItem("token", data.token);
+    if (data.user?.role) {
+      localStorage.setItem("role", data.user.role);
+    }
+  }
   return data;
 }
 
-// Returns only the events the current user is allowed to see —
-// the backend already filters results per-user, so no extra checks are needed here.
+export async function logout() {
+  const token = localStorage.getItem("token");
+  const res = await fetch(`${API_URL}/api/auth/logout`, {
+    method: "POST",
+    headers: { Authorization: `Bearer ${token}` },
+  });
+  localStorage.removeItem("token");
+  localStorage.removeItem("role");
+  return res.json();
+}
+
+export async function getMe() {
+  const token = localStorage.getItem("token");
+  const res = await fetch(`${API_URL}/api/auth/me`, {
+    headers: { Authorization: `Bearer ${token}` },
+  });
+  return res.json();
+}
+
 export async function getEvents() {
   const token = localStorage.getItem("token");
   const res = await fetch(`${API_URL}/api/events`, {
-    headers: { Authorization: `Bearer ${token}`, "X-Api-Key": API_TOKEN },
+    headers: { Authorization: `Bearer ${token}` },
+  });
+  return res.json();
+}
+
+export async function getEvent(id: string) {
+  const token = localStorage.getItem("token");
+  const res = await fetch(`${API_URL}/api/events/${id}`, {
+    headers: { Authorization: `Bearer ${token}` },
   });
   return res.json();
 }
@@ -39,6 +65,16 @@ export async function createUser(user: { email: string; password: string; role: 
     method: "POST",
     headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
     body: JSON.stringify(user),
+  });
+  return res.json();
+}
+
+export async function patchUser(id: string, updates: { role?: string; status?: string }) {
+  const token = localStorage.getItem("token");
+  const res = await fetch(`${API_URL}/api/users/${id}`, {
+    method: "PATCH",
+    headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+    body: JSON.stringify(updates),
   });
   return res.json();
 }
