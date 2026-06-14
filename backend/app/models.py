@@ -1,5 +1,6 @@
 """SQLModel tables: User, Event, Session (for opaque token storage)."""
 
+import secrets
 from datetime import datetime
 from enum import Enum
 from typing import Optional
@@ -61,7 +62,7 @@ class Event(SQLModel, table=True):
 class Session(SQLModel, table=True):
     """Opaque session tokens for real logout/revocation. Token is random and indexed for fast lookup."""
 
-    id: str = Field(primary_key=True)
+    id: str = Field(default_factory=lambda: secrets.token_urlsafe(16), primary_key=True)
     token: str = Field(unique=True, index=True)
     user_id: str = Field(foreign_key="user.id")
     created_at: datetime = Field(default_factory=datetime.utcnow)

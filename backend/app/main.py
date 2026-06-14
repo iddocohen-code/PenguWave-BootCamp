@@ -27,10 +27,11 @@ async def lifespan(app: FastAPI):
 
 app = FastAPI(title="PenguWave API", version="0.1.0", lifespan=lifespan)
 
-# CORS configuration: allow only the frontend dev server
+# CORS configuration: allow the frontend dev server. Vite falls back to 5174 when
+# 5173 is already in use, so allow both to keep the dev/demo flow glitch-free.
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[settings.cors_origin],
+    allow_origins=[settings.cors_origin, "http://localhost:5174"],
     allow_credentials=False,
     allow_methods=["*"],
     allow_headers=["*"],
