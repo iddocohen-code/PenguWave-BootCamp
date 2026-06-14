@@ -42,12 +42,12 @@ async def require_admin(user: User = Depends(get_current_user)) -> User:
 
 
 # Dependency for extracting the Bearer token from headers
-from fastapi.security import HTTPBearer, HTTPAuthenticationCredentials
+from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 
 security = HTTPBearer(auto_error=False)
 
 
-async def get_token(credentials: HTTPAuthenticationCredentials = Depends(security)) -> str:
+async def get_token(credentials: HTTPAuthorizationCredentials = Depends(security)) -> str:
     """Extract the Bearer token from the Authorization header."""
     if not credentials:
         return ""
