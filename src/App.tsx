@@ -6,34 +6,47 @@ import EventsPage from "./pages/EventsPage";
 import UsersPage from "./pages/UsersPage";
 import NotFound from "./pages/NotFound";
 
-// Skip the login modal during local development.
-const DEBUG_BYPASS_AUTH = false;
-
 function App() {
   const [showLogin, setShowLogin] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
 
-  // Show login modal on first visit
+  // Check for valid token on mount and show login if missing
   useEffect(() => {
-    if (DEBUG_BYPASS_AUTH) return;
-    const dismissed = sessionStorage.getItem("login-dismissed");
-    if (!dismissed) {
+    const token = localStorage.getItem("token");
+    if (!token) {
       setShowLogin(true);
+      setIsLoggedIn(false);
+    } else {
+      setIsLoggedIn(true);
     }
   }, []);
 
   const handleCloseLogin = () => {
-    sessionStorage.setItem("login-dismissed", "true");
+    const token = localStorage.getItem("token");
+    if (token) {
+      setIsLoggedIn(true);
+    }
     setShowLogin(false);
   };
 
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    localStorage.removeItem("role");
+    setIsLoggedIn(false);
+    setShowLogin(true);
+  };
+
+  // Guard /users route: only admins can access
+  const isAdmin = localStorage.getItem("role") === "admin";
+
   return (
     <>
-      <Navbar onLoginClick={() => setShowLogin(true)} />
+      <Navbar onLoginClick={() => setShowLogin(true)} onLogout={isLoggedIn ? handleLogout : undefined} />
       <div className="container">
         <Routes>
           <Route path="/" element={<Navigate to="/events" replace />} />
-          <Route path="/events" element={<EventsPage />} />
-          <Route path="/users" element={<UsersPage />} />
+          <Route path="/events" element={isLoggedIn ? <EventsPage /> : <Navigate to="/" replace />} />
+          <Route path="/users" element={isLoggedIn && isAdmin ? <UsersPage /> : <NotFound />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </div>
