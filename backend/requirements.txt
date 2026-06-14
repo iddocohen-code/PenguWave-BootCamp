@@ -8,3 +8,6 @@ passlib[bcrypt]>=1.7.4,<2.0
 bcrypt==4.0.1
 pydantic-settings>=2.2,<3.0
 email-validator>=2.1,<3.0
+# Claude API client for the AI SOC-analyst triage endpoint. Needs a recent
+# release for adaptive thinking + structured outputs (output_config.format).
+anthropic>=0.69,<1.0

@@ -10,7 +10,7 @@ from .config import settings
 from .database import create_db_and_tables, get_session, SessionLocal
 from .seed import seed_users, seed_events
 from .errors import register_error_handlers
-from .routers import auth, events, users
+from .routers import auth, events, users, triage
 
 
 @asynccontextmanager
@@ -43,6 +43,7 @@ register_error_handlers(app)
 app.include_router(auth.router)
 app.include_router(events.router)
 app.include_router(users.router)
+app.include_router(triage.router)
 
 
 @app.get("/health")

@@ -68,6 +68,16 @@ class EventOut(BaseModel):
         return escape_event_text(v)
 
 
+class TriageOut(BaseModel):
+    """AI SOC-analyst triage for an event: the three sections plus event context."""
+
+    event_id: str
+    severity: SeverityEnum
+    summary: str
+    blast_radius: str
+    next_step: str
+
+
 class ErrorOut(BaseModel):
     """Standardized error response shape: {"error": "..."}."""
 

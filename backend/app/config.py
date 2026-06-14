@@ -15,6 +15,10 @@ class Settings(BaseSettings):
 
     app_secret: str = "dev-secret-change-in-prod"
 
+    # Claude API key for the AI SOC-analyst triage endpoint. Empty by default so
+    # the app boots without it; the triage route returns 503 when it's unset.
+    anthropic_api_key: str = ""
+
     class Config:
         env_file = ".env"
 
