@@ -1,0 +1,10 @@
+# PenguWave backend dependencies
+fastapi>=0.110,<1.0
+uvicorn[standard]>=0.29,<1.0
+sqlmodel>=0.0.16,<0.1
+passlib[bcrypt]>=1.7.4,<2.0
+# Pin bcrypt to 4.0.x: passlib 1.7.4 cannot read bcrypt>=4.1's version metadata
+# and logs a noisy error. 4.0.1 is the last fully-compatible release.
+bcrypt==4.0.1
+pydantic-settings>=2.2,<3.0
+email-validator>=2.1,<3.0

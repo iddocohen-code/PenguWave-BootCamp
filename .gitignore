@@ -1,0 +1,31 @@
+# --- Node / frontend ---
+node_modules/
+dist/
+dist-ssr/
+*.local
+
+# --- Python / backend ---
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+env/
+
+# --- Secrets & local data (NEVER commit) ---
+.env
+.env.*
+!.env.example
+*.db
+*.sqlite
+*.sqlite3
+
+# --- Editor / OS ---
+.DS_Store
+.idea/
+.vscode/
+*.swp
+
+# --- Logs ---
+*.log
+logs/
