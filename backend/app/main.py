@@ -9,6 +9,8 @@ from sqlmodel import Session
 from .config import settings
 from .database import create_db_and_tables, get_session, SessionLocal
 from .seed import seed_users, seed_events
+from .errors import register_error_handlers
+from .routers import auth
 
 
 @asynccontextmanager
@@ -33,6 +35,12 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+# Register error handlers for consistent error responses
+register_error_handlers(app)
+
+# Include routers
+app.include_router(auth.router)
 
 
 @app.get("/health")
